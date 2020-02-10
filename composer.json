@@ -1,7 +1,7 @@
 {
     "name": "nmc9/uploader",
     "description": "A helper package for uploading tables to a laravel server.",
-    "type": "project",
+    "type": "package",
     "license": "MIT",
     "autoload": {
         "psr-4": {
