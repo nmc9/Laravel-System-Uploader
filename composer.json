@@ -1,0 +1,28 @@
+{
+    "name": "nmc9/uploader",
+    "description": "A helper package for uploading tables to a laravel server.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nmc9\\Uploader\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nmc9\\Uploader\\Test\\": "tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nick Caruso",
+            "email": "nmc9@pct.edu"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+        "orchestra/testbench": "^4.0",
+        "phpunit/phpunit": "^9.0"
+    }
+}
