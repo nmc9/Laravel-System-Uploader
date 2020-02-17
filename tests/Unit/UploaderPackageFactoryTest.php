@@ -2,7 +2,7 @@
 
 namespace Tests\Uploader\Unit;
 
-use Nmc9\Uploader\Contract\AbstractUploadableModel;
+use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\Contract\UploaderModelContract;
 use Nmc9\Uploader\Factory\UploaderPackageFactory;
 use Nmc9\Uploader\UploaderPackage;
@@ -23,8 +23,8 @@ class UploaderPackageFactoryTest extends TestCase
         $data = [
             Mockery::mock(UploaderRecord::class),
         ];
-        $model = Mockery::mock(AbstractUploadableModel::class);
-        $package = UploaderPackageFactory::create($model,$data);
+        $uploadable = Mockery::mock(UploadableContract::class);
+        $package = UploaderPackageFactory::create($uploadable,$data);
 
         $this->assertInstanceOf(UploaderPackage::class,$package);
     }

@@ -3,11 +3,12 @@
 namespace Tests\Uploader\Unit;
 
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
-use Nmc9\Uploader\Contract\UploaderModelContract;
+use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\Uploader;
 use Nmc9\Uploader\UploaderPackage;
 use Nmc9\Uploader\UploaderRecord;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Database\Eloquent\Model;
 use \Error;
 use \Mockery;
 class UploaderTest extends TestCase
@@ -31,14 +32,15 @@ class UploaderTest extends TestCase
         ];
 
         //Fake Model
-        $uploaderModel = Mockery::mock(UploaderModelContract::class);
-        $uploaderModel->shouldReceive('updateOrCreate')->once();
+        $model = Mockery::mock(Model::class)->shouldReceive('updateOrCreate')->once()->getMock();
+        // $uploadable = Mockery::mock(UploadableContract::class);
+        // $uploadable->shouldReceive('getUploadableModel')->once()->andReturn($model);
 
 
         //Fake Package
         $uploaderPackage = Mockery::mock(UploaderPackage::class);
         $uploaderPackage->shouldReceive('getData')->once()->andReturn($uploaderData);
-        $uploaderPackage->shouldReceive('getModel')->once()->andReturn($uploaderModel);
+        $uploaderPackage->shouldReceive('getUploadableModel')->once()->andReturn($model);
         $uploaderPackage->shouldReceive('getIdFields')->once()->andReturn(["company_id","customer_id"]);
 
 
@@ -59,13 +61,13 @@ class UploaderTest extends TestCase
         ];
 
         //Fake Model
-        $uploaderModel = Mockery::mock(UploaderModelContract::class);
+        $model = Mockery::mock(Model::class)->shouldReceive('updateOrCreate')->once()->getMock();
 
 
         //Fake Package
         $uploaderPackage = Mockery::mock(UploaderPackage::class);
         $uploaderPackage->shouldReceive('getData')->once()->andReturn($uploaderData);
-        $uploaderPackage->shouldReceive('getModel')->once()->andReturn($uploaderModel);
+        $uploaderPackage->shouldReceive('getUploadableModel')->once()->andReturn($model);
         $uploaderPackage->shouldReceive('getIdFields')->once()->andReturn(["company_id","customer_id"]);
 
 
@@ -92,14 +94,14 @@ class UploaderTest extends TestCase
         ];
 
         //Fake Model
-        $uploaderModel = Mockery::mock(UploaderModelContract::class);
-        // $uploaderModel->shouldReceive('updateOrCreate')->once();
+        $model = Mockery::mock(Model::class);
+        // $model->shouldReceive('updateOrCreate')->once();
 
 
         //Fake Package
         $uploaderPackage = Mockery::mock(UploaderPackage::class);
         $uploaderPackage->shouldReceive('getData')->once()->andReturn($uploaderData);
-        $uploaderPackage->shouldReceive('getModel')->once()->andReturn($uploaderModel);
+        $uploaderPackage->shouldReceive('getUploadableModel')->once()->andReturn($model);
         $uploaderPackage->shouldReceive('getIdFields')->once()->andReturn(["nu","na"]);
 
         $this->expectException(NoMatchingIdKeysException::class);
@@ -125,13 +127,13 @@ class UploaderTest extends TestCase
         ];
 
         //Fake Model
-        $uploaderModel = Mockery::mock(UploaderModelContract::class);
+        $model = Mockery::mock(Model::class);
 
 
         //Fake Package
         $uploaderPackage = Mockery::mock(UploaderPackage::class);
         $uploaderPackage->shouldReceive('getData')->once()->andReturn($uploaderData);
-        $uploaderPackage->shouldReceive('getModel')->once()->andReturn($uploaderModel);
+        $uploaderPackage->shouldReceive('getUploadableModel')->once()->andReturn($model);
         $uploaderPackage->shouldReceive('getIdFields')->once()->andReturn(["company_id","na"]);
 
         $this->expectException(Error::class);

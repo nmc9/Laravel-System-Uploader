@@ -2,9 +2,10 @@
 
 namespace Tests\Uploader\Unit;
 
-use Nmc9\Uploader\Contract\AbstractUploadableModel;
+use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\UploaderPackage;
 use Nmc9\Uploader\UploaderRecord;
+use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\TestCase;
 use \Mockery;
 
@@ -21,9 +22,9 @@ class UploaderPackageTest extends TestCase
         $data = [
             Mockery::mock(UploaderRecord::class),
         ];
-        $model = Mockery::mock(AbstractUploadableModel::class);
+        $uploadable = Mockery::mock(UploadableContract::class);
 
-        $uploaderPackage = new UploaderPackage($model,$data);
+        $uploaderPackage = new UploaderPackage($uploadable,$data);
         $this->assertEquals($uploaderPackage->getData(),$data);
     }
 
@@ -38,9 +39,9 @@ class UploaderPackageTest extends TestCase
             Mockery::mock(UploaderRecord::class),
             Mockery::mock(UploaderRecord::class),
         ];
-        $model = Mockery::mock(AbstractUploadableModel::class);
+        $uploadable = Mockery::mock(UploadableContract::class);
 
-        $uploaderPackage = new UploaderPackage($model,$data);
+        $uploaderPackage = new UploaderPackage($uploadable,$data);
         $this->assertEquals($uploaderPackage->getData(),$data);
     }
 
@@ -49,18 +50,18 @@ class UploaderPackageTest extends TestCase
      *
      * @return void
      */
-    public function test_uploader_package_returns_model()
+    public function test_uploader_package_returns_uploadable()
     {
 
         $data = [
             Mockery::mock(UploaderRecord::class),
             Mockery::mock(UploaderRecord::class),
         ];
-        $model = Mockery::mock(AbstractUploadableModel::class);
+        $uploadable = Mockery::mock(UploadableContract::class);
 
-        $uploaderPackage = new UploaderPackage($model,$data);
+        $uploaderPackage = new UploaderPackage($uploadable,$data);
 
-        $this->assertEquals($uploaderPackage->getModel(),$model);
+        $this->assertEquals($uploaderPackage->getUploadable(),$uploadable);
 
     }
 
@@ -76,11 +77,32 @@ class UploaderPackageTest extends TestCase
             Mockery::mock(UploaderRecord::class),
             Mockery::mock(UploaderRecord::class),
         ];
-        $model = Mockery::mock(AbstractUploadableModel::class)->shouldReceive('getUploaderIdFields')->once()->andReturn(["Company","Test"])->getMock();
+        $uploadable = Mockery::mock(UploadableContract::class)->shouldReceive('getUploaderIdFields')->once()->andReturn(["Company","Test"])->getMock();
 
-        $uploaderPackage = new UploaderPackage($model,$data);
+        $uploaderPackage = new UploaderPackage($uploadable,$data);
 
         $this->assertEquals($uploaderPackage->getIdFields(),["Company","Test"]);
+
+    }
+
+    /**
+     * A basic unit test example.
+     *
+     * @return void
+     */
+    public function test_uploader_package_returns_uploadable_model()
+    {
+
+        $data = [
+            Mockery::mock(UploaderRecord::class),
+            Mockery::mock(UploaderRecord::class),
+        ];
+        $model = Mockery::mock(Model::class);
+        $uploadable = Mockery::mock(UploadableContract::class)->shouldReceive('getModel')->once()->andReturn($model)->getMock();
+
+        $uploaderPackage = new UploaderPackage($uploadable,$data);
+
+        $this->assertEquals($uploaderPackage->getUploadableModel(),$model);
 
     }
 
@@ -95,9 +117,9 @@ class UploaderPackageTest extends TestCase
             Mockery::mock(UploaderRecord::class),
             Mockery::mock(UploaderRecord::class),
         ];
-        $model = Mockery::mock(AbstractUploadableModel::class)->shouldReceive('getUploaderIdFields')->once()->andReturn(["Company"])->getMock();
+        $uploadable = Mockery::mock(UploadableContract::class)->shouldReceive('getUploaderIdFields')->once()->andReturn(["Company"])->getMock();
 
-        $uploaderPackage = new UploaderPackage($model,$data);
+        $uploaderPackage = new UploaderPackage($uploadable,$data);
 
         $this->assertEquals($uploaderPackage->getIdFields(),["Company"]);
     }

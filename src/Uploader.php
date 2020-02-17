@@ -10,17 +10,13 @@ class Uploader implements UploaderContract
 {
 
 	private $data;
-
-	/**`
-	 * @var UploaderModelContract
-	 */
 	private $model;
 	private $idFields;
 
 
 	public function __construct(UploaderPackage $uploaderPackage){
 		$this->data = $uploaderPackage->getData();
-		$this->model = $uploaderPackage->getModel();
+		$this->model = $uploaderPackage->getUploadableModel();
 		$this->idFields = $uploaderPackage->getIdFields();
 	}
 

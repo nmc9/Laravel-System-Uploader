@@ -3,7 +3,7 @@
 namespace Nmc9\Uploader;
 
 use Nmc9\Uploader\Contract\AbstractUploadableModel;
-use Nmc9\Uploader\Contract\UploaderModelContract;
+use Nmc9\Uploader\Contract\UploadableContract;
 
 class UploaderPackage
 {
@@ -14,11 +14,11 @@ class UploaderPackage
 	private $data;
 
 	//Empty Model
-	private $model;
+	private $uploadable;
 
-	public function __construct(AbstractUploadableModel $model, array $data){
+	public function __construct(UploadableContract $uploadable, array $data){
 		$this->data = $data;
-		$this->model = $model;
+		$this->uploadable = $uploadable;
 	}
 
 	private function getValidator(){
@@ -30,12 +30,16 @@ class UploaderPackage
 		return $this->data;
 	}
 
-	public function getModel() : UploaderModelContract{
-		return $this->model;
+	public function getUploadable() : UploadableContract{
+		return $this->uploadable;
+	}
+
+	public function getUploadableModel(){
+		return $this->uploadable->getModel();
 	}
 
 	public function getIdFields(){
-		return $this->model->getUploaderIdFields();
+		return $this->uploadable->getUploaderIdFields();
 	}
 
 }
