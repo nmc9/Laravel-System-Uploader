@@ -2,18 +2,18 @@
 
 namespace Nmc9\Uploader\Example;
 
-use Nmc9\Uploader\Example\User;
 use Illuminate\Database\Eloquent\Model;
 use Nmc9\Uploader\Contract\UploadableContract;
+use Nmc9\Uploader\Example\BrokenBalance;
 
-class UploadableUser implements UploadableContract
+class UploadableBrokenBalance implements UploadableContract
 {
 
     public function getUploaderIdFields(){
-        return ["user_id"];
+        return ["company_id","customer_id"];
     }
 
     public function getModel() : Model{
-        return new User();
+        return new BrokenBalance();
     }
 }

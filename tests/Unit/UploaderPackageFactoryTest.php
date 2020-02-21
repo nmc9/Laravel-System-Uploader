@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Uploader\Unit;
+namespace Uploader\Tests\Unit;
 
 use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\Contract\UploaderModelContract;

@@ -2,22 +2,26 @@
 
 namespace Nmc9\Uploader;
 
-use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
+use Nmc9\Uploader\CompositeId;
+use Nmc9\Uploader\Contract\UploadMethodContract;
+use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\Contract\UploaderContract;
+use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
+use Nmc9\Uploader\UploadMethodUpdateOrCreate;
 use Nmc9\Uploader\UploaderPackage;
 
 class Uploader implements UploaderContract
 {
 
 	private $data;
-	private $model;
-	private $idFields;
+	private $uploadable;
+	private $method;
 
 
-	public function __construct(UploaderPackage $uploaderPackage){
+	public function __construct(UploaderPackage $uploaderPackage,UploadMethodContract $method = null){
 		$this->data = $uploaderPackage->getData();
-		$this->model = $uploaderPackage->getUploadableModel();
-		$this->idFields = $uploaderPackage->getIdFields();
+		$this->uploadable = $uploaderPackage->getUploadable();
+		$this->method = $method ?? new UploadMethodUpdateOrCreate();
 	}
 
 
@@ -27,26 +31,7 @@ class Uploader implements UploaderContract
 
 
 	public function upload(){
-		foreach ($this->data as $uploaderData) {
-			//This insures proper formatting
-			$record = $uploaderData->get();
-			$query = $this->queryFields($record);
-			$this->model->updateOrCreate(
-				$query,$record
-			);
-		}
-		return !!$this->data;
-	}
-
-	private function queryFields($record){
-		$matcherFields = [];
-		foreach ($this->idFields as $idField) {
-			if(!isset($record[$idField])){
-				throw new NoMatchingIdKeysException("Data is Missing in the Id Field [\"" . $idField . "\"]");
-			}
-			$matcherFields[$idField] = $record[$idField];
-		}
-		return $matcherFields;
+		return $this->method->handle($this->uploadable,$this->data);
 	}
 
 }

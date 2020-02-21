@@ -4,7 +4,7 @@ namespace Nmc9\Uploader\Example;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class ExampleBalance extends Model
 {
 
     /**
@@ -13,4 +13,6 @@ class User extends Model
      * @var array
      */
     protected $guarded = [];
+
+    public  $timestamps = false;
 }

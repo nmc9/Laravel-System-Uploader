@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Nmc9\Uploader\Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 
