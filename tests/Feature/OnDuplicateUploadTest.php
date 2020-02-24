@@ -4,7 +4,7 @@ namespace Uploader\Tests\Feature;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Nmc9\Uploader\Database\OnDuplicateUploader;
+use Nmc9\Uploader\OnDuplicateUploader;
 use Nmc9\Uploader\Example\BrokenBalance;
 use Nmc9\Uploader\Example\CustomerBalance;
 use Nmc9\Uploader\Example\UploadableBrokenBalance;
@@ -28,6 +28,23 @@ class OnDuplicateUploadTest extends \Orchestra\Testbench\TestCase
         }
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
         $this->withFactories(__DIR__ . '/../../database/factories');
+    }
+
+    public function test_no_data_returns_false_result(){
+        factory(CustomerBalance::class)->create([
+            'customer_id' => 1,
+            'company_id' => 2,
+            'balance' => 999,
+        ]);
+        $data = [
+        ];
+
+        $uploader = new OnDuplicateUploader(new UploadableCustomerBalance());
+
+        $result = $uploader->upload($data);
+
+        $this->assertFalse($result);
+
     }
 
     public function test_uploader_can_upload(){

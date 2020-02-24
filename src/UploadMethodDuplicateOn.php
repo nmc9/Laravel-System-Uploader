@@ -5,7 +5,7 @@ namespace Nmc9\Uploader;
 use Nmc9\Uploader\CompositeId;
 use Nmc9\Uploader\Contract\UploadMethodContract;
 use Nmc9\Uploader\Contract\UploadableContract;
-use Nmc9\Uploader\Database\OnDuplicateUploader;
+use Nmc9\Uploader\OnDuplicateUploader;
 
 class UploadMethodDuplicateOn implements UploadMethodContract
 {

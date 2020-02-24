@@ -20,6 +20,9 @@ class OnDuplicateGenerator
      */
     public function generate($table, $rows, array $exclude = [])
     {
+        if(empty($rows)){
+            return null;
+        }
         $columns = array_keys($rows[0]);
         $columnsString = implode('`,`', $columns);
         $values = $this->buildSQLValuesStringFrom($rows);

@@ -20,6 +20,7 @@ class ShowKeysGenerator
      */
     public function generate($table, $fields)
     {
+        $fields = !empty($fields) ? $fields : ["id"];
         $values = $this->buildSQLValuesStringFrom($fields);
 
         $query = vsprintf('SHOW KEYS FROM `%s` WHERE `Column_name` IN %s;', [

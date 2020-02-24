@@ -40,4 +40,18 @@ class ShowKeysGeneratorTest extends TestCase
         $this->assertEquals($expectedQuery, $queryObject->getQuery());
         $this->assertEquals($resources, $queryObject->getBindings());
     }
+
+    /** @test */
+    public function it_generates_a_query_object_for_no_resource()
+    {
+        $resources = [
+        ];
+        $expectedQuery = 'SHOW KEYS FROM `users` WHERE `Column_name` IN (?);';
+
+        $queryObject = (new ShowKeysGenerator)->generate('users', $resources);
+
+        $this->assertInstanceOf(QueryObject::class, $queryObject);
+        $this->assertEquals($expectedQuery, $queryObject->getQuery());
+        $this->assertEquals(["id"], $queryObject->getBindings());
+    }
 }

@@ -26,6 +26,7 @@ class OnDuplicateGeneratorTest extends TestCase
         $this->assertEquals($expectedBindings, $queryObject->getBindings());
     }
 
+
     protected function getTestResources()
     {
         return [

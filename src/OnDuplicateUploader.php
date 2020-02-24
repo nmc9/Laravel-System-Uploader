@@ -1,6 +1,6 @@
 <?php
 
-namespace Nmc9\Uploader\Database;
+namespace Nmc9\Uploader;
 
 use Illuminate\Database\Eloquent\Model;
 use Nmc9\Uploader\CompositeId;
@@ -27,7 +27,10 @@ class OnDuplicateUploader{
 		$this->checkIdFields();
 
 		$bulk = (new OnDuplicateGenerator())->generate($this->table,$records);
-		return \DB::statement($bulk->getQuery(),$bulk->getBindings());
+
+		return $bulk != null ?
+		\DB::statement($bulk->getQuery(),$bulk->getBindings()) :
+		false;
 	}
 
 	public function checkIdFields(){
