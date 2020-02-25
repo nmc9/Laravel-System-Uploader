@@ -43,7 +43,7 @@ class OnDuplicateUploader{
 	}
 
 	private function showKeys($table,$idFields){
-		$show =  ShowKeysGenerator::make()->generate($table,$idFields);
+		$show = ShowKeysGenerator::make()->generate($table,$idFields);
 		return collect(\DB::select($show->getQuery(),$show->getBindings()));
 	}
 

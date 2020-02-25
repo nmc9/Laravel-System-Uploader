@@ -20,6 +20,12 @@ class ReplaceGenerator
      */
     public function generate($table, $rows)
     {
+        return $this->generateRaw($table,array_map(function($row){
+            return $row->get();
+        },$rows));
+    }
+
+    public function generateRaw($table, $rows){
         if(empty($rows)){
             return null;
         }

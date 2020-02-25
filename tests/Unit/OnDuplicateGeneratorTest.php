@@ -2,8 +2,8 @@
 
 namespace Uploader\Tests\Unit;
 
-use Nmc9\Kfir\OnDuplicateGenerator;
-use Nmc9\Kfir\QueryObject;
+use Nmc9\Uploader\Kfir\OnDuplicateGenerator;
+use Nmc9\Uploader\Kfir\QueryObject;
 use PHPUnit\Framework\TestCase;
 
 class OnDuplicateGeneratorTest extends TestCase
@@ -19,7 +19,7 @@ class OnDuplicateGeneratorTest extends TestCase
             1150, 'jane@example.com', '$2y$10$umonN4rhJkJFOk3nwH34/eok5yRsx5mUFUQE2.VK92P1RyxdDB9bm', 'Wonder Jane', true, false, '4 Goldfield Rd. Honolulu, HI 96815', '202-555-0143', '2018-06-18', '2017-06-18', '2017-06-18',
         ];
 
-        $queryObject = (new OnDuplicateGenerator)->generate('users', $resources, $excludedColumnsFromUpdate);
+        $queryObject = (new OnDuplicateGenerator)->generateRaw('users', $resources, $excludedColumnsFromUpdate);
 
         $this->assertInstanceOf(QueryObject::class, $queryObject);
         $this->assertEquals($expectedQuery, $queryObject->getQuery());

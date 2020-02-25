@@ -5,8 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Nmc9\\Uploader\\": "src",
-            "Nmc9\\Kfir\\": "../import-query-generator/src"
+            "Nmc9\\Uploader\\": "src"
         }
     },
     "autoload-dev": {

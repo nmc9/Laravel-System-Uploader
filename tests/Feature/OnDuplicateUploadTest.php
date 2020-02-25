@@ -12,6 +12,7 @@ use Nmc9\Uploader\Example\UploadableCustomerBalance;
 use Nmc9\Uploader\Exceptions\MissingUniqueContraintException;
 use Nmc9\Uploader\Kfir\OnDuplicateGenerator;
 use PHPUnit\Framework\TestCase;
+use Nmc9\Uploader\UploaderRecord;
 use \Mockery;
 
 
@@ -54,15 +55,15 @@ class OnDuplicateUploadTest extends \Orchestra\Testbench\TestCase
             'balance' => 999,
         ]);
         $data = [
-            [
+            new UploaderRecord([
                 'customer_id' => 12,
                 'company_id' => 2,
                 'balance' => 100,
-            ],[
+            ]),new UploaderRecord([
                 'customer_id' => 1,
                 'company_id' => 2,
                 'balance' => 200,
-            ]
+            ])
         ];
 
         $uploader = new OnDuplicateUploader(new UploadableCustomerBalance());
@@ -71,21 +72,21 @@ class OnDuplicateUploadTest extends \Orchestra\Testbench\TestCase
 
         $this->assertTrue($result);
 // dd(CustomerBalance::all());
-        $this->assertDatabaseHas('customer_balances',$data[0]);
-        $this->assertDatabaseHas('customer_balances',$data[1]);
+        $this->assertDatabaseHas('customer_balances',$data[0]->get());
+        $this->assertDatabaseHas('customer_balances',$data[1]->get());
     }
 
     public function test_uploader_throws_exception_when_the_table_is_missing_composite_keys(){
         $data = [
-            [
+            new UploaderRecord([
                 'customer_id' => 12,
                 'company_id' => 2,
                 'balance' => 100,
-            ],[
+            ]),new UploaderRecord([
                 'customer_id' => 1,
                 'company_id' => 2,
                 'balance' => 200,
-            ]
+            ])
         ];
 
         $this->expectException(MissingUniqueContraintException::class);
@@ -103,23 +104,23 @@ class OnDuplicateUploadTest extends \Orchestra\Testbench\TestCase
             'balance' => 999,
         ]);
         $data = [
-            [
+            new UploaderRecord([
                 'customer_id' => 17,
                 'company_id' => 2,
                 'balance' => 100,
-            ],[
+            ]),new UploaderRecord([
                 'customer_id' => 48,
                 'company_id' => 2,
                 'balance' => 200,
-            ]
+            ])
         ];
 
         $uploader = new OnDuplicateUploader(new UploadableBrokenBalance(),false);
 
         $uploader->upload($data);
 
-        $this->assertDatabaseMissing('broken_balances',$data[0]);
-        $this->assertDatabaseHas('broken_balances',$data[1]);
+        $this->assertDatabaseMissing('broken_balances',$data[0]->get());
+        $this->assertDatabaseHas('broken_balances',$data[1]->get());
     }
 
 }
