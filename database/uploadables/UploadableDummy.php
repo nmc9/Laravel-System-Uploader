@@ -1,19 +1,19 @@
 <?php
 
-namespace Nmc9\Uploader\Example;
+namespace Nmc9\Uploader\Database\Uploadables;
 
-use Nmc9\Uploader\Example\User;
 use Illuminate\Database\Eloquent\Model;
 use Nmc9\Uploader\Contract\UploadableContract;
+use Nmc9\Uploader\Database\Models\Dummy;
 
-class UploadableUser implements UploadableContract
+class UploadableDummy implements UploadableContract
 {
 
     public function getUploaderIdFields(){
-        return ["user_id"];
+        return [];
     }
 
     public function getModel() : Model{
-        return new User();
+        return new Dummy();
     }
 }

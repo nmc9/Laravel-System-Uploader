@@ -1,6 +1,6 @@
 <?php
 
-namespace Nmc9\Uploader\Example;
+namespace Nmc9\Uploader\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

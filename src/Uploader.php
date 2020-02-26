@@ -7,7 +7,7 @@ use Nmc9\Uploader\Contract\UploadMethodContract;
 use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\Contract\UploaderContract;
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
-use Nmc9\Uploader\UploadMethodUpdateOrCreate;
+use Nmc9\Uploader\Method\UploadMethodUpdateOrCreate;
 use Nmc9\Uploader\UploaderPackage;
 
 class Uploader implements UploaderContract

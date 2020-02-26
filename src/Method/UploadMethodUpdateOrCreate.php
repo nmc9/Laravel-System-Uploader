@@ -1,6 +1,6 @@
 <?php
 
-namespace Nmc9\Uploader;
+namespace Nmc9\Uploader\Method;
 
 use Nmc9\Uploader\CompositeId;
 use Nmc9\Uploader\Contract\UploadMethodContract;
@@ -8,11 +8,6 @@ use Nmc9\Uploader\Contract\UploadableContract;
 
 class UploadMethodUpdateOrCreate implements UploadMethodContract
 {
-
-	public function __construct(){
-
-	}
-
 
 	public function handle(UploadableContract $uploadable,$data){
 		foreach ($data as $index => $uploaderData) {

@@ -34,7 +34,7 @@ class ShowKeysGeneratorTest extends TestCase
         ];
         $expectedQuery = 'SHOW KEYS FROM `users` WHERE `Column_name` IN (?);';
 
-        $queryObject = (new ShowKeysGenerator)->generate('users', $resources);
+        $queryObject = ShowKeysGenerator::make()->generate('users', $resources);
 
         $this->assertInstanceOf(QueryObject::class, $queryObject);
         $this->assertEquals($expectedQuery, $queryObject->getQuery());
@@ -48,7 +48,7 @@ class ShowKeysGeneratorTest extends TestCase
         ];
         $expectedQuery = 'SHOW KEYS FROM `users` WHERE `Column_name` IN (?);';
 
-        $queryObject = (new ShowKeysGenerator)->generate('users', $resources);
+        $queryObject = ShowKeysGenerator::make()->generate('users', $resources);
 
         $this->assertInstanceOf(QueryObject::class, $queryObject);
         $this->assertEquals($expectedQuery, $queryObject->getQuery());

@@ -1,12 +1,12 @@
 <?php
 
-namespace Nmc9\Uploader\Example;
+namespace Nmc9\Uploader\Database\Uploadables;
 
 use Illuminate\Database\Eloquent\Model;
 use Nmc9\Uploader\Contract\UploadableContract;
-use Nmc9\Uploader\Example\CustomerBalance;
+use Nmc9\Uploader\Database\Models\BrokenBalance;
 
-class UploadableCustomerBalance implements UploadableContract
+class UploadableBrokenBalance implements UploadableContract
 {
 
     public function getUploaderIdFields(){
@@ -14,6 +14,6 @@ class UploadableCustomerBalance implements UploadableContract
     }
 
     public function getModel() : Model{
-        return new CustomerBalance();
+        return new BrokenBalance();
     }
 }

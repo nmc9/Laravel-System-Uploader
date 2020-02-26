@@ -5,7 +5,7 @@
 use App\Models\Company;
 use App\Models\Customer;
 use Faker\Generator as Faker;
-use Nmc9\Uploader\Example\CustomerBalance;
+use Nmc9\Uploader\Database\Models\CustomerBalance;
 
 $factory->define(CustomerBalance::class, function (Faker $faker) {
     return [

@@ -18,22 +18,19 @@ class OnDuplicateGenerator
      *
      * @return QueryObject
      */
-    public function generate($table, $rows, array $exclude = [])
+    public function generate($table, $records, array $exclude = [])
     {
         return $this->generateRaw($table,array_map(function($row){
             return $row->get();
-        },$rows)
+        },$records)
         ,$exclude);
     }
 
     public function generateRaw($table, $rows, array $exclude = []){
-        // dd($rows);
         if(empty($rows)){
             return null;
         }
-        // dd($rows[0]);
         $columns = array_keys($rows[0]);
-        // dd($columns);
         $columnsString = implode('`,`', $columns);
         $values = $this->buildSQLValuesStringFrom($rows);
         $updates = $this->buildSQLUpdatesStringFrom($columns, $exclude);

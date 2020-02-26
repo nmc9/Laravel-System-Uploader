@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Nmc9\Uploader\Contract\UploadMethodContract;
 use Nmc9\Uploader\Contract\UploadableContract;
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
-use Nmc9\Uploader\UploadMethodDuplicateOn;
+use Nmc9\Uploader\Method\UploadMethodOnDuplicate;
 use Nmc9\Uploader\Uploader;
 use Nmc9\Uploader\UploaderPackage;
 use Nmc9\Uploader\UploaderRecord;
 use PHPUnit\Framework\TestCase;
 use \Error;
 use \Mockery;
-class UploaderTest extends \Orchestra\Testbench\TestCase
+class UploaderTest extends TestCase
 {
     /**
      * A basic unit test example.
@@ -157,7 +157,7 @@ class UploaderTest extends \Orchestra\Testbench\TestCase
         $uploaderPackage->shouldReceive('getData')->once()->andReturn($uploaderData);
         $uploaderPackage->shouldReceive('getUploadable')->once()->andReturn(Mockery::mock(UploadableContract::class));
 
-        $method = Mockery::mock(UploadMethodDuplicateOn::class)->shouldReceive('handle')->once()->andReturn(true)->getMock();
+        $method = Mockery::mock(UploadMethodOnDuplicate::class)->shouldReceive('handle')->once()->andReturn(true)->getMock();
         $uploader = new Uploader($uploaderPackage, $method);
         $this->assertTrue($uploader->upload());
 

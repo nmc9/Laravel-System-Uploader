@@ -1,10 +1,10 @@
 <?php
 
-namespace Nmc9\Uploader\Example;
+namespace Nmc9\Uploader\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerBalance extends Model
+class ExampleBalance extends Model
 {
 
     /**

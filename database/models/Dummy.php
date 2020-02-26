@@ -1,12 +1,13 @@
 <?php
 
-namespace Nmc9\Uploader\Example;
+namespace Nmc9\Uploader\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Dummy extends Model
 {
 
+	protected $table = "dummy";
     /**
      * The attributes that are mass assignable.
      *

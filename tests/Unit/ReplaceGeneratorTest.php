@@ -4,6 +4,7 @@ namespace Uploader\Tests\Unit;
 
 use Nmc9\Uploader\Kfir\QueryObject;
 use Nmc9\Uploader\Kfir\ReplaceGenerator;
+use Nmc9\Uploader\UploaderRecord;
 use PHPUnit\Framework\TestCase;
 
 class ReplaceGeneratorTest extends TestCase
@@ -25,6 +26,38 @@ class ReplaceGeneratorTest extends TestCase
         $this->assertEquals($expectedBindings, $queryObject->getBindings());
     }
 
+    public function test_it_generates_a_null_when_there_are_no_rows(){
+        $this->assertEquals(ReplaceGenerator::make()->generate('users',[]),null);
+    }
+
+    public function test_it_generates_a_query_object_for_an_array_with_one_record(){
+        $expectedQuery = "REPLACE INTO `teeth` (`bite`) VALUES (?);";
+        $expectedBindings = [1];
+        $rows = [
+            new UploaderRecord([
+                "bite" => 1,
+            ]),
+        ];
+        $query = ReplaceGenerator::make()->generate('teeth',$rows);
+        $this->assertEquals($expectedQuery, $query->getQuery());
+        $this->assertEquals($expectedBindings, $query->getBindings());
+    }
+
+    public function test_it_generates_a_query_object_for_an_array_of_records(){
+        $expectedQuery = "REPLACE INTO `gums` (`chew`) VALUES (?),(?);";
+        $expectedBindings = [1,2];
+        $rows = [
+            new UploaderRecord([
+                "chew" => 1,
+            ]),
+            new UploaderRecord([
+                "chew" => 2,
+            ]),
+        ];
+        $query = ReplaceGenerator::make()->generate('gums',$rows);
+        $this->assertEquals($expectedQuery, $query->getQuery());
+        $this->assertEquals($expectedBindings, $query->getBindings());
+    }
     protected function getTestResources()
     {
         return [

@@ -5,7 +5,7 @@
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
-use Nmc9\Uploader\Database\Models\User;
+use Nmc9\Uploader\Database\Models\Dummy;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,11 +18,9 @@ use Nmc9\Uploader\Database\Models\User;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Dummy::class, function (Faker $faker) {
 	return [
-		"user_id" => 14,
-		'name' => $faker->name,
-		'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+		"dummy_id" => $faker->randomNumber(),
+		'data' => $faker->name,
     ];
 });

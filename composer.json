@@ -10,19 +10,23 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Nmc9\\Uploader\\Test\\": "tests"
+            "Nmc9\\Uploader\\Tests\\": "tests",
+            "Nmc9\\Uploader\\Database\\": "database"
         }
     },
     "authors": [
         {
             "name": "Nick Caruso",
             "email": "nmc9@pct.edu"
+        },
+        {
+            "name": "Kfir Bens-Ami",
+            "email": "kfirba2@gmail.com"
         }
     ],
     "minimum-stability": "dev",
     "require": {},
     "require-dev": {
-        "orchestra/testbench": "^4.0",
-        "phpunit/phpunit": "^9.0"
+        "orchestra/testbench": "^4.6"
     }
 }

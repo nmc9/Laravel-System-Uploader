@@ -4,12 +4,13 @@ namespace Uploader\Tests\Unit;
 
 use Nmc9\Uploader\Kfir\OnDuplicateGenerator;
 use Nmc9\Uploader\Kfir\QueryObject;
+use Nmc9\Uploader\UploaderRecord;
 use PHPUnit\Framework\TestCase;
 
 class OnDuplicateGeneratorTest extends TestCase
 {
-    /** @test */
-    public function it_generates_a_query_object_for_a_given_resource()
+
+    public function test_it_generates_a_query_object_for_a_given_resource()
     {
         $resources = $this->getTestResources();
         $excludedColumnsFromUpdate = ['customer_number', 'password', 'created_at', 'password_valid_until'];
@@ -24,6 +25,39 @@ class OnDuplicateGeneratorTest extends TestCase
         $this->assertInstanceOf(QueryObject::class, $queryObject);
         $this->assertEquals($expectedQuery, $queryObject->getQuery());
         $this->assertEquals($expectedBindings, $queryObject->getBindings());
+    }
+
+    public function test_it_generates_a_null_when_there_are_no_rows(){
+        $this->assertEquals(OnDuplicateGenerator::make()->generate('users',[]),null);
+    }
+
+    public function test_it_generates_a_query_object_for_an_array_with_one_record(){
+        $expectedQuery = "INSERT INTO `teeth` (`bite`) VALUES (?) ON DUPLICATE KEY UPDATE `bite`=VALUES(`bite`);";
+        $expectedBindings = [1];
+        $rows = [
+            new UploaderRecord([
+                "bite" => 1,
+            ]),
+        ];
+        $query = OnDuplicateGenerator::make()->generate('teeth',$rows);
+        $this->assertEquals($expectedQuery, $query->getQuery());
+        $this->assertEquals($expectedBindings, $query->getBindings());
+    }
+
+    public function test_it_generates_a_query_object_for_an_array_of_records(){
+        $expectedQuery = "INSERT INTO `gums` (`chew`) VALUES (?),(?) ON DUPLICATE KEY UPDATE `chew`=VALUES(`chew`);";
+        $expectedBindings = [1,2];
+        $rows = [
+            new UploaderRecord([
+                "chew" => 1,
+            ]),
+            new UploaderRecord([
+                "chew" => 2,
+            ]),
+        ];
+        $query = OnDuplicateGenerator::make()->generate('gums',$rows);
+        $this->assertEquals($expectedQuery, $query->getQuery());
+        $this->assertEquals($expectedBindings, $query->getBindings());
     }
 
 
