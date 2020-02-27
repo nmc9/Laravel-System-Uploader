@@ -9,6 +9,7 @@ use Nmc9\Uploader\Database\Models\CustomerBalance;
 use Nmc9\Uploader\Database\Uploadables\UploadableBrokenBalance;
 use Nmc9\Uploader\Database\Uploadables\UploadableCustomerBalance;
 use Nmc9\Uploader\Database\Uploadables\UploadableDummy;
+use Nmc9\Uploader\Database\Uploadables\UploadableJustIndex;
 use Nmc9\Uploader\Exceptions\MissingUniqueContraintException;
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
 use Nmc9\Uploader\Method\UploadMethodOnDuplicate;
@@ -231,6 +232,24 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
         $this->assertTrue($uploader->upload());
 
 
+    }
+
+    public function test_uploader_with_just_an_index_still_fails_the_check(){
+        $uploaderData = [
+            new UploaderRecord([
+                "data" => 4,
+            ]),
+            new UploaderRecord([
+                "data" => 5,
+            ]),
+        ];
+
+        $this->expectException(MissingUniqueContraintException::class);
+        $this->expectExceptionMessage('Expected Unique Constraint ["data"] but only [] is in the database');
+
+        $uploaderPackage = new UploaderPackage(new UploadableJustIndex(),$uploaderData);
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $this->assertTrue($uploader->upload());
     }
 
 

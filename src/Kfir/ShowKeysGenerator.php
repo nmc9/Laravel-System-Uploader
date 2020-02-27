@@ -22,7 +22,7 @@ class ShowKeysGenerator
         $fields = !empty($fields) ? $fields : ["id"];
         $values = $this->buildSQLValuesStringFrom($fields);
 
-        $query = vsprintf('SHOW KEYS FROM `%s` WHERE `Column_name` IN %s;', [
+        $query = vsprintf('SHOW KEYS FROM `%s` WHERE Non_Unique = 0 AND `Column_name` IN %s;', [
             $table, $values
         ]);
 

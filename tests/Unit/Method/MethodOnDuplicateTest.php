@@ -42,9 +42,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0
             ]
         ]);
 
@@ -74,6 +76,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -105,9 +108,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -139,9 +144,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -171,9 +178,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -201,6 +210,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -228,9 +238,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -306,9 +318,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -340,9 +354,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -374,9 +390,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 
@@ -408,9 +426,11 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             [
                 "Column_name" => "company_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ],[
                 "Column_name" => "customer_id",
                 "other" => "junk",
+                "Non_Unique" => 0,
             ]
         ]);
 

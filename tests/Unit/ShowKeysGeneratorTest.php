@@ -17,7 +17,7 @@ class ShowKeysGeneratorTest extends TestCase
             'balance',
             'something else'
         ];
-        $expectedQuery = 'SHOW KEYS FROM `users` WHERE `Column_name` IN (?,?,?,?);';
+        $expectedQuery = 'SHOW KEYS FROM `users` WHERE Non_Unique = 0 AND `Column_name` IN (?,?,?,?);';
 
         $queryObject = (new ShowKeysGenerator)->generate('users', $resources);
 
@@ -32,7 +32,7 @@ class ShowKeysGeneratorTest extends TestCase
         $resources = [
             'single',
         ];
-        $expectedQuery = 'SHOW KEYS FROM `users` WHERE `Column_name` IN (?);';
+        $expectedQuery = 'SHOW KEYS FROM `users` WHERE Non_Unique = 0 AND `Column_name` IN (?);';
 
         $queryObject = ShowKeysGenerator::make()->generate('users', $resources);
 
@@ -46,7 +46,7 @@ class ShowKeysGeneratorTest extends TestCase
     {
         $resources = [
         ];
-        $expectedQuery = 'SHOW KEYS FROM `users` WHERE `Column_name` IN (?);';
+        $expectedQuery = 'SHOW KEYS FROM `users` WHERE Non_Unique = 0 AND `Column_name` IN (?);';
 
         $queryObject = ShowKeysGenerator::make()->generate('users', $resources);
 
