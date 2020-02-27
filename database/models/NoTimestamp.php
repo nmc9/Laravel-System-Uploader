@@ -4,9 +4,10 @@ namespace Nmc9\Uploader\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerBalance extends Model
+class NoTimestamp extends Model
 {
 
+	protected $table = "notimestamp";
     /**
      * The attributes that are mass assignable.
      *
@@ -14,5 +15,5 @@ class CustomerBalance extends Model
      */
     protected $guarded = [];
 
-    // public $timestamps = false;
+    public $timestamps = false;
 }

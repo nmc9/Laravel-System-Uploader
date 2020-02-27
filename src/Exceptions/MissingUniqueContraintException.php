@@ -14,13 +14,17 @@ class MissingUniqueContraintException extends Exception
 		$this->expected = $expected;
 		$this->inDatabase = $inDatabase;
 
-		$message = $message ?? sprintf('Expected Unique Constraint [%s] but only [%s] %s in the database',
+		$message = $message ?? $this->makeMessage($expected,$inDatabase);
+
+		parent::__construct($message, $code, $previous);
+	}
+
+	private function makeMessage($expected,$inDatabase){
+		return sprintf('Expected Unique Constraint [%s] but only [%s] %s in the database',
 			$this->reduce($expected),
 			$this->reduce($inDatabase),
 			count($inDatabase) > 1 ? "are" : "is"
 		);
-
-		parent::__construct($message, $code, $previous);
 	}
 
 	public function getExpected(){

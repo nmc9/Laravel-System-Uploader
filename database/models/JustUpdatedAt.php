@@ -4,9 +4,10 @@ namespace Nmc9\Uploader\Database\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerBalance extends Model
+class JustUpdatedAt extends Model
 {
 
+	protected $table = "just_updated_at";
     /**
      * The attributes that are mass assignable.
      *
@@ -14,5 +15,6 @@ class CustomerBalance extends Model
      */
     protected $guarded = [];
 
-    // public $timestamps = false;
+    const CREATED_AT = null;
+    const UPDATED_AT = "LastModified";
 }

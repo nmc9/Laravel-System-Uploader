@@ -13,8 +13,7 @@ class ShowKeysGenerator
      * Generates a QueryObject with the SQL query and the bindings.
      *
      * @param       $table
-     * @param       $rows
-     * @param array $exclude
+     * @param       $fields
      *
      * @return QueryObject
      */
@@ -44,17 +43,5 @@ class ShowKeysGenerator
                 return $x . "?,";
             }),','
         ) . ")";
-    }
-
-    /**
-     * Flatten the given array one level deep to extract the bindings.
-     *
-     * @param $rows
-     *
-     * @return mixed
-     */
-    protected function extractBindingsFrom($rows)
-    {
-        return $rows;
     }
 }

@@ -14,7 +14,6 @@ class ReplaceGenerator
      *
      * @param       $table
      * @param       $rows
-     * @param array $exclude
      *
      * @return QueryObject
      */
@@ -25,6 +24,14 @@ class ReplaceGenerator
         },$rows));
     }
 
+    /**
+     * Generates a QueryObject with the SQL query and the bindings.
+     *
+     * @param       $table
+     * @param       $rows
+     *
+     * @return QueryObject
+     */
     public function generateRaw($table, $rows){
         if(empty($rows)){
             return null;

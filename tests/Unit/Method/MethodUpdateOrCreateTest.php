@@ -1,6 +1,6 @@
 <?php
 
-namespace Nmc9\Uploader\Test\Feature;
+namespace Nmc9\Uploader\Test\Unit\Method;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;

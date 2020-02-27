@@ -29,6 +29,21 @@ class Uploader implements UploaderContract
 		dd($this->data);
 	}
 
+	public function dumpAll(){
+		dd($this);
+	}
+
+	public function getData(){
+		return $this->data;
+	}
+
+	public function getMethod(){
+		return $this->method;
+	}
+
+	public function getUploadable(){
+		return $this->uploadable;
+	}
 
 	public function upload(){
 		return $this->method->handle($this->uploadable,$this->data);

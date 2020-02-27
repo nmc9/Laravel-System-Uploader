@@ -2,6 +2,8 @@
 
 namespace Nmc9\Uploader\Method;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Nmc9\Uploader\CompositeId;
 use Nmc9\Uploader\Contract\UploadMethodContract;
@@ -20,44 +22,64 @@ class UploadMethodOnDuplicate implements UploadMethodContract
 	private $idFields;
 	private $records;
 
+	private $updated_at_key = null;
+	private $created_at_key = null;
+	private $runTimestamps = true;
+
 	public function __construct($check = true){
 		$this->check = $check;
 	}
 
 	public function turnOffCheck(){
 		$this->check = false;
+		return $this;
 	}
 
 	public function turnOnCheck(){
 		$this->check = true;
+		return $this;
 	}
 
+	public function turnOffTimestamps(){
+		$this->runTimestamps = false;
+		return $this;
+	}
+
+	public function turnOnTimestamps(){
+		$this->runTimestamps = true;
+		return $this;
+	}
 
 	public function handle(UploadableContract $uploadable,$data){
 		$this->setUploadable($uploadable);
 		$this->setData($data);
 		return $this->upload();
 	}
-	public function doDB(){
-		\DB::select("SELECT * FROM users");
-	}
+
 
 	public function setUploadable(UploadableContract $uploadable){
-		$this->table = $uploadable->getModel()->getTable();
+		$model = $uploadable->getModel();
+		$this->table = $model->getTable();
+		$this->setTimestamps($model);
 		$this->idFields = $uploadable->getUploaderIdFields();
+	}
+
+	public function setTimestamps(Model $model){
+		if($model->timestamps){
+			$this->updated_at_key = $model::UPDATED_AT;
+			$this->created_at_key = $model::CREATED_AT;
+		}
 	}
 
 	public function setData($data){
 		$this->records = $data;
 	}
 
-	public function upload(){
-		$this->checkIdFields();
-		$bulk = OnDuplicateGenerator::make()->generate($this->table,$this->records);
-		// dd($bulk->getQuery(),$bulk->getBindings());
-		return $bulk != null ?
-		DB::statement($bulk->getQuery(),$bulk->getBindings()) :
-		false;
+	public function getTimestamps(){
+		return [
+			"updated_at" => $this->updated_at_key,
+			"created_at" => $this->created_at_key
+		];
 	}
 
 	public function checkIdFields(){
@@ -65,6 +87,32 @@ class UploadMethodOnDuplicate implements UploadMethodContract
 			$this->checkKeys();
 			$this->checkMissingIdFields();
 		}
+	}
+
+	public function upload(){
+		$this->checkIdFields();
+		$generator = OnDuplicateGenerator::make();
+		if($this->runTimestamps()){
+			$generator = $this->setGeneratorTimestamps($generator);
+		}
+
+		$bulk = $generator->generate($this->table,$this->records);
+
+		return $bulk != null ?
+		DB::statement($bulk->getQuery(),$bulk->getBindings()) :
+		false;
+	}
+
+	protected function getNow(){
+		return Carbon::now();
+	}
+
+	protected function runTimestamps(){
+		return $this->runTimestamps;
+	}
+
+	private function setGeneratorTimestamps(OnDuplicateGenerator $generator){
+		return $generator->setTimestamps($this->getNow(),$this->getTimestamps()["updated_at"],$this->getTimestamps()["created_at"]);
 	}
 
 	private function checkKeys(){

@@ -2,7 +2,6 @@
 
 namespace Nmc9\Uploader;
 
-//refactor to uploader record
 class UploaderRecord
 {
 	private $data;
