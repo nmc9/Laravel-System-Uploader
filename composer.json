@@ -25,7 +25,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "nesbot/carbon": "^2.0@dev"
+    },
     "require-dev": {
         "orchestra/testbench": "^4.6"
     }
