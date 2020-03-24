@@ -2,7 +2,7 @@
 
 namespace Nmc9\Uploader\Kfir;
 
-class OnDuplicateGenerator
+class OnDuplicateRawGenerator
 {
 
     private $updated_at = [];
@@ -41,15 +41,17 @@ class OnDuplicateGenerator
         if(empty($rows)){
             return null;
         }
+
         $columns = $this->buildColumns($rows,$raw);
         $columnsString = implode('`,`', $columns);
         $values = $this->buildSQLValuesStringFrom($rows,$raw);
+        // dd($values);
         $updates = $this->buildSQLUpdatesStringFrom($columns, $exclude);
-
         $query = vsprintf('INSERT INTO `%s` (`%s`) VALUES %s ON DUPLICATE KEY UPDATE %s;', [
             $table, $columnsString, $values, $updates,
         ]);
-        return new QueryObject($query, $this->extractBindingsFrom($rows,$raw));
+
+        return new QueryObject($query, null);
     }
 
     /**
@@ -81,8 +83,18 @@ class OnDuplicateGenerator
      */
     protected function buildSQLValuesStringFrom($rows,$raw)
     {
-        return rtrim(array_reduce($rows, function ($values, $row) use ($raw){
-            return $values . '(' . rtrim(str_repeat('?,', count($this->mergeWithTimestamps($row,$raw))), ',') . '),';
+        return rtrim(array_reduce($rows, function ($values, $row) use ($raw) {
+            $data = $values . "(";
+            foreach ($this->mergeWithTimestamps($row,$raw) as $key => $value) {
+                if($value === null){
+                    $data .= "NULL,";
+                }else if($value instanceof \Carbon\Carbon){
+                    $data .= "\"" . $value->toDateTimeString() . "\",";
+                }else{
+                    $data .= vsprintf('"%s",',$value);
+                }
+            }
+            return  rtrim($data,",") . '),';
         }, ''), ',');
     }
 
@@ -126,14 +138,17 @@ class OnDuplicateGenerator
      */
     protected function extractBindingsFrom($rows,$raw)
     {
-        return array_reduce($rows, function ($result, $item) use ($raw) {
+        return array_reduce($rows, function ($result, $item) {
             return array_merge($result, array_values($this->mergeWithTimestamps($item,$raw)));
         }, []);
     }
 
 
     private function mergeWithTimestamps($row,$raw){
-        $row = $raw ? $row : $row->get();
-        return array_merge($row,$this->updated_at,$this->created_at);
+        return array_merge($this->get($row,$raw),$this->updated_at,$this->created_at);
+    }
+
+    private function get($row,$raw){
+        return $raw ? $row : $row->get();
     }
 }

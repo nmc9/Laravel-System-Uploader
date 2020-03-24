@@ -14,4 +14,8 @@ class UploaderRecord
 		return $this->data;
 	}
 
+	public function __toString(){
+		return $this->data;
+	}
+
 }

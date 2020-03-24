@@ -7,6 +7,7 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 abstract class LaravelTestCase extends BaseTestCase
 {
 	public $runMigrations = false;
+
 	public function setup(): void{
 		parent::setup();
 		if($this->runMigrations){

@@ -2,7 +2,6 @@
 
 namespace Nmc9\Uploader\Test\Feature;
 
-use Doctrine\DBAL\Driver\PDOException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Nmc9\Uploader\Database\Models\BrokenBalance;
@@ -15,7 +14,7 @@ use Nmc9\Uploader\Exceptions\InvalidDatabaseException;
 use Nmc9\Uploader\Exceptions\MissingUniqueContraintException;
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
 use Nmc9\Uploader\Exceptions\UploaderQueryException;
-use Nmc9\Uploader\Method\UploadMethodOnDuplicate;
+use Nmc9\Uploader\Method\UploadMethodOnDuplicateRaw;
 use Nmc9\Uploader\Tests\MySqlOnlyTestCase;
 use Nmc9\Uploader\Uploader;
 use Nmc9\Uploader\UploaderPackage;
@@ -23,7 +22,7 @@ use Nmc9\Uploader\UploaderRecord;
 use \Error;
 use \Mockery;
 
-class UploaderOnDuplicateTest extends MySqlOnlyTestCase
+class UploaderOnDuplicateRawTest extends MySqlOnlyTestCase
 {
     public $runMigrations = true;
 
@@ -43,7 +42,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
 
         $this->assertDatabaseHas('customer_balances',[
@@ -61,7 +60,9 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
     public function test_uploader_can_update_package_records_using_on_duplicator(){
 
-        $cb1 = factory(CustomerBalance::class)->create();
+        $cb1 = factory(CustomerBalance::class)->create([
+            "customer_id" => 0
+        ]);
         $cb2 = factory(CustomerBalance::class)->create();
 
 
@@ -80,7 +81,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
 
         $this->assertDatabaseHas('customer_balances',[
@@ -107,7 +108,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertFalse($uploader->upload());
     }
 
@@ -134,7 +135,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertFalse($uploader->upload());
     }
 
@@ -162,7 +163,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertFalse($uploader->upload());
     }
 
@@ -189,7 +190,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableBrokenBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertFalse($uploader->upload());
     }
 
@@ -214,7 +215,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableBrokenBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate(false));
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw(false));
         $this->assertTrue($uploader->upload());
     }
 
@@ -231,7 +232,7 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
             ]),
         ];
         $uploaderPackage = new UploaderPackage(new UploadableDummy(),$uploaderData);
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
 
 
@@ -251,42 +252,9 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
         $this->expectExceptionMessage('Expected Unique Constraint ["data"] but only [] is in the database');
 
         $uploaderPackage = new UploaderPackage(new UploadableJustIndex(),$uploaderData);
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
     }
-
-    public function test_uploader_can_insert_package_records_with_set_connection(){
-        $uploaderData = [
-            new UploaderRecord([
-                "company_id" => 1,
-                'customer_id' => 1,
-                "balance" => 123
-            ]),
-            new UploaderRecord([
-                "company_id" => 1,
-                'customer_id' => 2,
-                "balance" => 300
-            ]),
-        ];
-
-        $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
-
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate(true,'mysql'));
-        $this->assertTrue($uploader->upload());
-
-        $this->assertDatabaseHas('customer_balances',[
-            "company_id" => 1,
-            'customer_id' => 1,
-            "balance" => 123,
-        ]);
-
-        $this->assertDatabaseHas('customer_balances',[
-            "company_id" => 1,
-            'customer_id' => 2,
-            "balance" => 300,
-        ]);
-    }
-
 
     public function test_uploader_throws_exception_when_non_mysql_is_used(){
         $this->expectException(InvalidDatabaseException::class);
@@ -302,7 +270,9 @@ class UploaderOnDuplicateTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate(true,"sqlite"));
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw(true,"sqlite"));
         $this->assertTrue($uploader->upload());
     }
+
+
 }

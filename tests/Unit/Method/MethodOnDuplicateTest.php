@@ -25,6 +25,11 @@ use \Mockery;
 
 class MethodOnDuplicateTest extends LaravelTestCase{
 
+
+    public function setup(): void{
+        parent::setup();
+        config()->set('database.default','mysql');
+    }
     public function test_good_data_passes_the_id_fields_check(){
         $data = [
             new UploaderRecord([
@@ -38,6 +43,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -72,6 +78,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -104,6 +111,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -140,6 +148,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -174,6 +183,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -186,9 +196,62 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             ]
         ]);
 
-        \DB::shouldReceive('statement')->once()->andReturn(true);
+        $pdo = Mockery::mock();
+        $pdo->shouldReceive('setAttribute')->once();
+        $pdo->shouldReceive('prepare')->once()->andReturnSelf();
+        $pdo->shouldReceive('execute')->once()->andReturn(true);
+
+        \DB::shouldReceive('getPdo')->once()->andReturn($pdo)->getMock();
 
         $method = new UploadMethodOnDuplicate();
+        $this->assertTrue($method->handle($uploadable,$data));
+
+    }
+
+    public function test_good_data_returns_true_on_a_different_connection(){
+
+        config()->set('database.connections.fakection',[
+            'driver' => 'mysql',
+        ]);
+
+        $data = [
+            new UploaderRecord([
+                "company_id" => 1,
+                "customer_id" => 2,
+            ]),
+            new UploaderRecord([
+                "company_id" => 1,
+                "customer_id" => 3,
+            ])
+        ];
+
+        $model = Mockery::mock(Model::class);
+        $model->shouldReceive('getTable')->once()->andReturn('customer_balances');
+        $uploadable = Mockery::mock(UploadableContract::class);
+        $uploadable->shouldReceive('getModel')->once()->andReturn($model);
+        $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
+
+        \DB::shouldReceive('connection')->andReturnSelf();
+        \DB::shouldReceive('select')->once()->andReturn([
+            [
+                "Column_name" => "company_id",
+                "other" => "junk",
+                "Non_Unique" => 0,
+            ],[
+                "Column_name" => "customer_id",
+                "other" => "junk",
+                "Non_Unique" => 0,
+            ]
+        ]);
+
+        $pdo = Mockery::mock();
+        $pdo->shouldReceive('setAttribute')->once();
+        $pdo->shouldReceive('prepare')->once()->andReturnSelf();
+        $pdo->shouldReceive('execute')->once()->andReturn(true);
+
+        \DB::shouldReceive('getPdo')->once()->andReturn($pdo)->getMock();
+
+        $method = new UploadMethodOnDuplicate(true,'fakection');
         $this->assertTrue($method->handle($uploadable,$data));
 
     }
@@ -206,6 +269,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->once()->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -234,6 +298,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->once()->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -314,6 +379,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -326,7 +392,12 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             ]
         ]);
 
-        \DB::shouldReceive('statement')->once()->andReturn(true);
+        $pdo = Mockery::mock();
+        $pdo->shouldReceive('setAttribute')->once();
+        $pdo->shouldReceive('prepare')->once()->andReturnSelf();
+        $pdo->shouldReceive('execute')->once()->andReturn(true);
+
+        \DB::shouldReceive('getPdo')->once()->andReturn($pdo)->getMock();
 
         $method = (new UploadMethodOnDuplicate())->turnOffTimestamps();
         $this->assertTrue($method->handle($uploadable,$data));
@@ -350,6 +421,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -362,7 +434,12 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             ]
         ]);
 
-        \DB::shouldReceive('statement')->once()->andReturn(true);
+        $pdo = Mockery::mock();
+        $pdo->shouldReceive('setAttribute')->once();
+        $pdo->shouldReceive('prepare')->once()->andReturnSelf();
+        $pdo->shouldReceive('execute')->once()->andReturn(true);
+
+        \DB::shouldReceive('getPdo')->once()->andReturn($pdo)->getMock();
 
         $method = new UploadMethodOnDuplicate();
         $this->assertTrue($method->handle($uploadable,$data));
@@ -386,6 +463,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -398,7 +476,12 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             ]
         ]);
 
-        \DB::shouldReceive('statement')->once()->andReturn(true);
+        $pdo = Mockery::mock();
+        $pdo->shouldReceive('setAttribute')->once();
+        $pdo->shouldReceive('prepare')->once()->andReturnSelf();
+        $pdo->shouldReceive('execute')->once()->andReturn(true);
+
+        \DB::shouldReceive('getPdo')->once()->andReturn($pdo)->getMock();
 
         $method = new UploadMethodOnDuplicate();
         $this->assertTrue($method->handle($uploadable,$data));
@@ -422,6 +505,7 @@ class MethodOnDuplicateTest extends LaravelTestCase{
         $uploadable->shouldReceive('getModel')->once()->andReturn($model);
         $uploadable->shouldReceive('getUploaderIdFields')->once()->andReturn(['company_id', 'customer_id']);
 
+        \DB::shouldReceive('connection')->andReturnSelf();
         \DB::shouldReceive('select')->once()->andReturn([
             [
                 "Column_name" => "company_id",
@@ -434,7 +518,13 @@ class MethodOnDuplicateTest extends LaravelTestCase{
             ]
         ]);
 
-        \DB::shouldReceive('statement')->once()->andReturn(true);
+        $pdo = Mockery::mock();
+        $pdo->shouldReceive('setAttribute')->once();
+        $pdo->shouldReceive('prepare')->once()->andReturnSelf();
+        $pdo->shouldReceive('execute')->once()->andReturn(true);
+
+        \DB::shouldReceive('getPdo')->once()->andReturn($pdo)->getMock();
+
 
         $method = new UploadMethodOnDuplicate();
         $this->assertTrue($method->handle($uploadable,$data));

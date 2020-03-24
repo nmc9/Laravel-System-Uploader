@@ -9,16 +9,16 @@ use Illuminate\Support\Facades\DB;
 use Nmc9\Uploader\CompositeId;
 use Nmc9\Uploader\Contract\UploadMethodContract;
 use Nmc9\Uploader\Contract\UploadableContract;
-use Nmc9\Uploader\DBStatement;
 use Nmc9\Uploader\Exceptions\InvalidDatabaseException;
 use Nmc9\Uploader\Exceptions\MissingUniqueContraintException;
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
 use Nmc9\Uploader\Exceptions\UploaderQueryException;
 use Nmc9\Uploader\Kfir\OnDuplicateGenerator;
+use Nmc9\Uploader\Kfir\OnDuplicateRawGenerator;
 use Nmc9\Uploader\Kfir\ShowKeysGenerator;
 use Nmc9\Uploader\OnDuplicateUploader;
 
-class UploadMethodOnDuplicate implements UploadMethodContract
+class UploadMethodOnDuplicateRaw implements UploadMethodContract
 {
 
 	private $check;
@@ -27,8 +27,6 @@ class UploadMethodOnDuplicate implements UploadMethodContract
 	private $table;
 	private $idFields;
 	private $records;
-
-	private $chunk_size = 250;
 
 	private $updated_at_key = null;
 	private $created_at_key = null;
@@ -108,37 +106,23 @@ class UploadMethodOnDuplicate implements UploadMethodContract
 	}
 
 	public function upload(){
-		// var_dump("run upload" . \Carbon\Carbon::now()->toDateTimeString());
 		$this->checkIdFields();
-		$generator = OnDuplicateGenerator::make();
+		$generator = OnDuplicateRawGenerator::make();
 		if($this->runTimestamps()){
 			$generator = $this->setGeneratorTimestamps($generator);
 		}
-		$success = false;
-		// $i = 0;
-		foreach (array_chunk($this->records,$this->chunk_size) as $chunk) {
-			$bulk = $generator->generate($this->table,$chunk);
-			if($bulk == null){
-				return false;
-			}
-			try{
-				$success = DBStatement::execute($bulk,$this->connection);
-				if(!$success){
-					return false;
-				}
 
-				// if($i++ % 10 == 0){
-					// var_dump($i * $this->chunk_size);
-				// }
-			}catch(QueryException $e){
-				$previous = $e->getPrevious();
-				$message = $previous != null ? $previous->getMessage() : "There was a problem running the query";
-				throw new UploaderQueryException($message);
-			}catch(\PDOException $e){
-				throw new UploaderQueryException($e->getMessage());
-			}
+		$bulk = $generator->generate($this->table,$this->records);
+		if($bulk == null){
+			return false;
 		}
-		return $success;
+		try{
+			return DB::statement($bulk->getQuery());
+		}catch(QueryException $e){
+			$previous = $e->getPrevious();
+			$message = $previous != null ? $previous->getMessage() : "There was a problem running the query";
+			throw new UploaderQueryException($message);
+		}
 	}
 
 	protected function getNow(){
@@ -149,7 +133,7 @@ class UploadMethodOnDuplicate implements UploadMethodContract
 		return $this->runTimestamps;
 	}
 
-	private function setGeneratorTimestamps(OnDuplicateGenerator $generator){
+	private function setGeneratorTimestamps(OnDuplicateRawGenerator $generator){
 		return $generator->setTimestamps($this->getNow(),$this->getTimestamps()["updated_at"],$this->getTimestamps()["created_at"]);
 	}
 
@@ -165,7 +149,7 @@ class UploadMethodOnDuplicate implements UploadMethodContract
 
 	private function showKeys($table,$idFields){
 		$show = ShowKeysGenerator::make()->generate($table,$idFields);
-		return collect(DBStatement::select($show->getQuery(),$show->getBindings(),$this->connection));
+		return collect(\DB::select($show->getQuery(),$show->getBindings()));
 	}
 
 	private function throwMissingUniqueContraintException($keysList,$idFields){

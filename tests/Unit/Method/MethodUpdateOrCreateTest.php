@@ -15,7 +15,7 @@ use \Mockery;
 class MethodUpdateOrCreateTest extends LaravelTestCase
 {
 
-	use RefreshDatabase;
+	// use RefreshDatabase;
 
 	public function test_handler_can_return_true_with_good_data(){
 		$data = [

@@ -33,14 +33,14 @@
         <server name="SESSION_DRIVER" value="array"/>
 
 
-        <!-- <server name="DB_CONNECTION" value="sqlite"/> -->
-        <!-- <server name="DB_DATABASE" value=":memory:"/> -->
-        <server name="DB_CONNECTION" value="mysql"/>
-        <server name="DB_HOST" value="192.168.10.74"/>
-        <server name="DB_PORT" value="3306"/>
-        <server name="DB_DATABASE" value="testing"/>
-        <server name="DB_USERNAME" value="homestead"/>
-        <server name="DB_PASSWORD" value="secret"/>
+        <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_DATABASE" value=":memory:"/>
+        <!-- <server name="DB_CONNECTION" value="mysql"/> -->
+        <!-- <server name="DB_HOST" value="192.168.10.39"/> -->
+        <!-- <server name="DB_PORT" value="3306"/> -->
+        <!-- <server name="DB_DATABASE" value="test"/> -->
+        <!-- <server name="DB_USERNAME" value="homestead"/> -->
+        <!-- <server name="DB_PASSWORD" value="secret"/> -->
 
     </php>
 </phpunit>

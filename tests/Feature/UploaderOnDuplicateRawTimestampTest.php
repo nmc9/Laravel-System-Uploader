@@ -16,7 +16,7 @@ use Nmc9\Uploader\Database\Uploadables\UploadableJustCreatedAt;
 use Nmc9\Uploader\Database\Uploadables\UploadableJustUpdatedAt;
 use Nmc9\Uploader\Exceptions\MissingUniqueContraintException;
 use Nmc9\Uploader\Exceptions\NoMatchingIdKeysException;
-use Nmc9\Uploader\Method\UploadMethodOnDuplicate;
+use Nmc9\Uploader\Method\UploadMethodOnDuplicateRaw;
 use Nmc9\Uploader\Tests\MySqlOnlyTestCase;
 use Nmc9\Uploader\Uploader;
 use Nmc9\Uploader\UploaderPackage;
@@ -24,7 +24,7 @@ use Nmc9\Uploader\UploaderRecord;
 use \Error;
 use \Mockery;
 
-class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
+class UploaderOnDuplicateRawTimestampTest extends MySqlOnlyTestCase
 {
     public $runMigrations = true;
 
@@ -45,8 +45,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
         ];
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
-
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
 
         $this->assertDatabaseHas('customer_balances',[
@@ -94,7 +93,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
         $this->assertDatabaseHas('customer_balances',[
             "company_id" => $cb1->company_id,
@@ -131,7 +130,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,(new UploadMethodOnDuplicate())->turnOffTimestamps());
+        $uploader = new Uploader($uploaderPackage,(new UploadMethodOnDuplicateRaw())->turnOffTimestamps());
         $this->assertTrue($uploader->upload());
 
         $this->assertDatabaseHas('customer_balances',[
@@ -179,7 +178,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableCustomerBalance(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,(new UploadMethodOnDuplicate())->turnOffTimestamps());
+        $uploader = new Uploader($uploaderPackage,(new UploadMethodOnDuplicateRaw())->turnOffTimestamps());
         $this->assertTrue($uploader->upload());
         $this->assertDatabaseHas('customer_balances',[
             "company_id" => $cb1->company_id,
@@ -216,7 +215,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableJustUpdatedAt(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
 
         $this->assertDatabaseHas('just_updated_at',[
@@ -260,7 +259,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableJustUpdatedAt(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
         $this->assertDatabaseHas('just_updated_at',[
             "company_id" => $cb1->company_id,
@@ -295,7 +294,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableJustCreatedAt(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
 
         $this->assertDatabaseHas('just_created_at',[
@@ -338,7 +337,7 @@ class UploaderOnDuplicateTimestampTest extends MySqlOnlyTestCase
 
         $uploaderPackage = new UploaderPackage(new UploadableJustCreatedAt(),$uploaderData);
 
-        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicate());
+        $uploader = new Uploader($uploaderPackage,new UploadMethodOnDuplicateRaw());
         $this->assertTrue($uploader->upload());
         $this->assertDatabaseHas('just_created_at',[
             "company_id" => $cb1->company_id,

@@ -13,7 +13,6 @@ class UploaderPackage
 	 */
 	private $data;
 
-	//Empty Model
 	private $uploadable;
 
 	public function __construct(UploadableContract $uploadable, array $data){
